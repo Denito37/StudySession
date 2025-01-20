@@ -1,12 +1,19 @@
 from pydantic import BaseModel
+from typing import List
+from uuid import uuid4
 
-class Questions_request(BaseModel):
+class QuestionsBase(BaseModel):
     question: str
     topic: str
     sub_topic:str
+    answer:str
 
-class Questions_reponse(BaseModel):
+class Questions_Input(QuestionsBase):
+    pass
+
+class Questions_Output(QuestionsBase):
+    id: uuid4
+
+class Quiz_Output(BaseModel):
     id: int
-    question: str
-    topic: str
-    sub_topic:str
+    questions:List[Questions_Output]

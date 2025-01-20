@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker, relationship, Session
 from sqlalchemy.ext.declarative import declarative_base
+from uuid import uuid4
 
 url = 'sqlite:///./QA.db'
 
@@ -12,7 +13,9 @@ Base = declarative_base()
 
 class Questions(Base):
     __tablename__= 'Questions'
-    id = Column(Integer, primary_key=True)
+    id = Column(uuid4, primary_key=True)
     question = Column(String(200))
+    answer = Column(String)
+    topic = Column(String)
 
 Base.metadata.create_all(engine)
