@@ -1,18 +1,18 @@
 from pydantic import BaseModel
 from typing import List
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 class QuestionsBase(BaseModel):
+    #id: str
     question: str
     topic: str
-    sub_topic:str
     answer:str
 
 class Questions_Input(QuestionsBase):
     pass
 
 class Questions_Output(QuestionsBase):
-    id: uuid4
+    id: int
 
 class Quiz_Output(BaseModel):
     id: int
