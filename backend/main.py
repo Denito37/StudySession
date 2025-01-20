@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 import uvicorn
-from .models import Questions_Input
-from .database import sessionLocal, Questions, Session, Base, engine
+from utils.models import Questions_Input
+from utils.database import sessionLocal, Questions, Session, Base, engine
 from typing import List
 
 app = FastAPI()
