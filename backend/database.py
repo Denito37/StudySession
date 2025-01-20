@@ -13,9 +13,9 @@ Base = declarative_base()
 
 class Questions(Base):
     __tablename__= 'Questions'
-    id = Column(uuid4, primary_key=True)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid4()))
     question = Column(String(200))
     answer = Column(String)
-    topic = Column(String)
+    topic = Column(String, index=True)
 
 Base.metadata.create_all(engine)
