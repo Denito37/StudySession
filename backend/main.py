@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
+from pydantic import BaseModel
 import uvicorn
-from utils.models import Questions_Input
-from utils.database import sessionLocal, Questions, Session, Base, engine
+from utils.models import sessionLocal, Questions, Session, Base, engine
 from typing import List
 
 app = FastAPI()
@@ -14,7 +14,22 @@ def get_db():
     finally:
         db.close()
 
-@app.post('/Questions', response_model= Questions_Input)
+class QuestionsBase(BaseModel):
+    question: str
+    topic: str
+    answer:str
+
+class Questions_Input(QuestionsBase):
+    pass
+
+class Questions_Output(QuestionsBase):
+    id: int
+
+class Quiz_Output(BaseModel):
+    id: int
+    questions:List[Questions_Output]
+
+@app.post('/Questions', response_model= Questions_Output)
 async def post_questions(question : Questions_Input, db: Session=Depends(get_db)):
     db_item = Questions(**question.model_dump())
     db.add(db_item)
@@ -22,12 +37,12 @@ async def post_questions(question : Questions_Input, db: Session=Depends(get_db)
     db.refresh(db_item)
     return question
 
-@app.get('/Questions', response_model= List[Questions_Input])
+@app.get('/Questions', response_model= List[Questions_Output])
 async def get_questions(db: Session = Depends(get_db)):
     db_item = db.query(Questions).all()
     return db_item
 
-@app.get('/Questions/{topic}', response_model=List[Questions_Input])
+@app.get('/Questions/{topic}', response_model=List[Questions_Output])
 async def get_topic_questions(topic:str, db: Session = Depends(get_db)):
     db_item = db.query(Questions).filter(Questions.topic == topic).all()
     if not db_item:

@@ -1,19 +1,18 @@
-from pydantic import BaseModel
-from typing import List
-from uuid import uuid4, UUID
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
+from sqlalchemy.orm import sessionmaker, relationship, Session, declarative_base
 
-class QuestionsBase(BaseModel):
-    #id: str
-    question: str
-    topic: str
-    answer:str
+url = 'sqlite:///./QA.db'
 
-class Questions_Input(QuestionsBase):
-    pass
+engine = create_engine(url, echo=True)
 
-class Questions_Output(QuestionsBase):
-    id: int
+sessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-class Quiz_Output(BaseModel):
-    id: int
-    questions:List[Questions_Output]
+Base = declarative_base()
+
+class Questions(Base):
+    __tablename__= 'Questions'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    question = Column(String(200))
+    answer = Column(String)
+    topic = Column(String, index=True)
+
