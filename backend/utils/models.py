@@ -15,4 +15,5 @@ class Questions(Base):
     question = Column(String(200))
     answer = Column(String)
     topic = Column(String, index=True)
+    sub_topic = Column(String, index=True)
 

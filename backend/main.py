@@ -17,6 +17,7 @@ def get_db():
 class QuestionsBase(BaseModel):
     question: str
     topic: str
+    sub_topic:str
     answer:str
 
 class Questions_Input(QuestionsBase):
@@ -45,6 +46,13 @@ async def get_questions(db: Session = Depends(get_db)):
 @app.get('/Questions/{topic}', response_model=List[Questions_Output])
 async def get_topic_questions(topic:str, db: Session = Depends(get_db)):
     db_item = db.query(Questions).filter(Questions.topic == topic).all()
+    if not db_item:
+        raise HTTPException(status_code= 404, detail='Topic not found')
+    return db_item
+
+@app.get('/Questions/{topic}/{sub_topic}', response_model=List[Questions_Output])
+async def get_topic_questions(topic:str,sub_topic:str, db: Session = Depends(get_db)):
+    db_item = db.query(Questions).filter(Questions.topic == topic and Questions.sub_topic == sub_topic).all()
     if not db_item:
         raise HTTPException(status_code= 404, detail='Topic not found')
     return db_item
