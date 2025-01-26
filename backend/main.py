@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import uvicorn
 from .utils.models import sessionLocal, Questions, Session, Base, engine
 from typing import List
+from  sqlalchemy.sql.expression import func
 
 app = FastAPI()
 Base.metadata.create_all(engine)
@@ -52,15 +53,15 @@ async def get_questions(db: Session = Depends(get_db)):
     return db_item
 
 @app.get('/Questions/{topic}', response_model=List[Questions_Output])
-async def get_topic_questions(topic:str, db: Session = Depends(get_db)):
-    db_item = db.query(Questions).filter(Questions.topic == topic).all()
+async def get_topic_questions(topic:str, n:int = 5, db: Session = Depends(get_db)):
+    db_item = db.query(Questions).filter(func.lower(Questions.topic) == func.lower(topic)).order_by(func.random()).limit(n).all()
     if not db_item:
         raise HTTPException(status_code= 404, detail='Topic not found')
     return db_item
 
 @app.get('/Questions/{topic}/{sub_topic}', response_model=List[Questions_Output])
-async def get_topic_questions(topic:str,sub_topic:str, db: Session = Depends(get_db)):
-    db_item = db.query(Questions).filter(Questions.topic == topic and Questions.sub_topic == sub_topic).all()
+async def get_topic_questions(topic:str, sub_topic:str, n:int = 5, db: Session = Depends(get_db)):
+    db_item = db.query(Questions).filter(func.lower(Questions.topic) == func.lower(topic) and func.lower(Questions.sub_topic) == func.lower(sub_topic)).order_by(func.random()).limit(n).all()
     if not db_item:
         raise HTTPException(status_code= 404, detail='Topic not found')
     return db_item
