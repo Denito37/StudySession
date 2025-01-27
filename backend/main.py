@@ -59,9 +59,24 @@ async def get_topic_questions(topic:str, sub_topic:str, n:int = 5, db: Session =
         raise HTTPException(status_code= 404, detail='Sub-topic not found')
     return db_item
 
-@app.delete('/Questions/{topic}', response_model = Questions_Output)
-async def delete_question(topic:str, db: Session = Depends(get_db)):
-    db_item = db.query(Questions).filter(func.lower(Questions.topic) == func.lower(topic)).first()
+@app.put('/Questions/{question_id}', response_model=Questions_Output)
+async def update_question(question_id:int, question:Questions_Input, db: Session = Depends(get_db)):
+    db_item = db.query(Questions).filter(Questions.id == question_id).first()
+    if not db_item:
+        raise HTTPException(status_code= 404, detail='question not found')
+    updated_data = question.model_dump(exclude_unset=True)
+
+    for key, value in updated_data.items():
+        setattr(db_item,key,value)
+
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+@app.delete('/Questions/{question_id}', response_model = Questions_Output)
+async def delete_question(question_id:int, db: Session = Depends(get_db)):
+    db_item = db.query(Questions).filter(Questions.id == question_id).first()
     if not db_item:
         raise HTTPException(status_code= 404, detail='Topic question not found')
     db.delete(db_item)
