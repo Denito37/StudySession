@@ -5,7 +5,7 @@ from .utils.models import Questions, Session, Base, engine, get_db
 from typing import List
 from  sqlalchemy.sql.expression import func
 
-app = FastAPI()
+app = FastAPI(openapi_prefix="/Question")
 Base.metadata.create_all(engine)
 
 class QuestionsBase(BaseModel):
@@ -21,7 +21,7 @@ class Questions_Output(QuestionsBase):
     id: int
 
 
-@app.post('/Questions', response_model = Questions_Output)
+@app.post('/', response_model = Questions_Output)
 async def post_questions(question : Questions_Input, db: Session=Depends(get_db)):
     db_item = Questions(**question.model_dump())
     db.add(db_item)
@@ -29,7 +29,7 @@ async def post_questions(question : Questions_Input, db: Session=Depends(get_db)
     db.refresh(db_item)
     return db_item
 
-@app.post('/Questions/all', response_model = List[Questions_Output])
+@app.post('/all', response_model = List[Questions_Output])
 async def post_questions(questions : List[Questions_Input], db: Session=Depends(get_db)):
     db_items=[]
     for question in questions:
@@ -40,26 +40,26 @@ async def post_questions(questions : List[Questions_Input], db: Session=Depends(
         db_items.append(db_item)
     return db_items
 
-@app.get('/Questions', response_model = List[Questions_Output])
-async def get_questions(db: Session = Depends(get_db)):
-    db_item = db.query(Questions).all()
+@app.get('/', response_model = List[Questions_Output])
+async def get_questions(n:int = 10,offset:int=0,db: Session = Depends(get_db)):
+    db_item = db.query(Questions).limit(n).offset(offset).all()
     return db_item
 
-@app.get('/Questions/{topic}', response_model = List[Questions_Output])
+@app.get('/{topic}', response_model = List[Questions_Output])
 async def get_topic_questions(topic:str, n:int = 5, db: Session = Depends(get_db)):
     db_item = db.query(Questions).filter(func.lower(Questions.topic) == func.lower(topic)).order_by(func.random()).limit(n).all()
     if not db_item:
         raise HTTPException(status_code= 404, detail='Topic not found')
     return db_item
 
-@app.get('/Questions/{topic}/{sub_topic}', response_model = List[Questions_Output])
+@app.get('/{topic}/{sub_topic}', response_model = List[Questions_Output])
 async def get_topic_questions(topic:str, sub_topic:str, n:int = 5, db: Session = Depends(get_db)):
     db_item = db.query(Questions).filter(func.lower(Questions.topic) == func.lower(topic) and func.lower(Questions.sub_topic) == func.lower(sub_topic)).order_by(func.random()).limit(n).all()
     if not db_item:
         raise HTTPException(status_code= 404, detail='Sub-topic not found')
     return db_item
 
-@app.put('/Questions/{question_id}', response_model=Questions_Output)
+@app.put('/{question_id}', response_model=Questions_Output)
 async def update_question(question_id:int, question:Questions_Input, db: Session = Depends(get_db)):
     db_item = db.query(Questions).filter(Questions.id == question_id).first()
     if not db_item:
@@ -74,7 +74,7 @@ async def update_question(question_id:int, question:Questions_Input, db: Session
     db.refresh(db_item)
     return db_item
 
-@app.delete('/Questions/{question_id}', response_model = Questions_Output)
+@app.delete('/{question_id}', response_model = Questions_Output)
 async def delete_question(question_id:int, db: Session = Depends(get_db)):
     db_item = db.query(Questions).filter(Questions.id == question_id).first()
     if not db_item:
