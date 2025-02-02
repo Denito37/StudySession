@@ -20,7 +20,7 @@ class Questions(Base):
     __tablename__= 'Questions'
     id = Column(Integer, primary_key=True, autoincrement=True)
     question = Column(String(200))
-    answer = Column(String)
-    topic = Column(String, index=True)
-    sub_topic = Column(String, index=True)
+    answer = Column(String(1000))
+    topic = Column(String(50), index=True)
+    sub_topic = Column(String(50), index=True)
 
