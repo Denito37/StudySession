@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 from .utils.models import Questions, Session, Base, engine, get_db
@@ -7,6 +8,19 @@ from  sqlalchemy.sql.expression import func
 
 app = FastAPI(openapi_prefix="/Question")
 Base.metadata.create_all(engine)
+
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class QuestionsBase(BaseModel):
     question: str
