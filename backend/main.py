@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
+from .utils.schema import Questions_Input, Questions_Output
 from .utils.models import Questions, Session, Base, engine, get_db
 from typing import List
 from  sqlalchemy.sql.expression import func
@@ -21,19 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-class QuestionsBase(BaseModel):
-    question: str
-    answer:str
-    topic: str
-    sub_topic:str
-
-class Questions_Input(QuestionsBase):
-    pass
-
-class Questions_Output(QuestionsBase):
-    id: int
-
 
 @app.post('/', response_model = Questions_Output)
 async def post_questions(question : Questions_Input, db: Session=Depends(get_db)):
