@@ -5,6 +5,12 @@
   text-align: center;
 }
 
+h1{
+  padding: 1rem;
+  margin: 1rem;
+  text-align: center;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
