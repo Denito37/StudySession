@@ -1,5 +1,5 @@
 
-interface Exam {
+type Exam = {
     question:string
     answer:string
     topic:string
@@ -10,8 +10,9 @@ export default function Exam({exam}:{exam:Exam}){
         <>
             <section>
                 
-                <h3>Topic:$'${exam.topic +" "+ exam.sub_topic}'</h3>
-                <p>{exam.question}</p>
+                <h3>Topic: <span>{exam.topic}</span></h3>
+                <h3>SubTopic: {exam.sub_topic}</h3>
+                <p>Question: {exam.question}</p>
             </section>
         </>
     )
