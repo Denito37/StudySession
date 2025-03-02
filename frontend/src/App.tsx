@@ -1,6 +1,6 @@
 import './App.css'
-import './components/exam.tsx'
-import Exam from './components/exam.tsx'
+import './components/question.tsx'
+import Question from './components/question.tsx'
 import Header from './components/header.tsx'
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
   return (
     <>   
       <Header />
-      <Exam exam={exam_one} />
+      <Question question={exam_one} />
     </>
   )
 }

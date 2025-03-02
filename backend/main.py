@@ -2,8 +2,8 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
-from .utils.schema import Questions_Input, Questions_Output
-from .utils.models import Questions, Session, Base, engine, get_db
+from utils.schema import Questions_Input, Questions_Output
+from utils.models import Questions, Session, Base, engine, get_db
 from typing import List
 from  sqlalchemy.sql.expression import func
 

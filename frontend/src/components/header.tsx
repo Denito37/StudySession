@@ -1,8 +1,9 @@
 export default function Header(){
     return(
-        <h1>
-            Study Sessions
-        </h1>
-
+        <header>
+            <h1>
+                Study Sessions
+            </h1>
+        </header>
     )
 }
