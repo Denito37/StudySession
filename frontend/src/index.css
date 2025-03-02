@@ -57,6 +57,10 @@ button:focus-visible {
 span{
   font-weight:bold;
 }
+input{
+  padding:.4rem;
+  margin:0.05rem .15rem;
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
