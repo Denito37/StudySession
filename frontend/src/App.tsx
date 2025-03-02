@@ -18,6 +18,7 @@ type ExamProps = {
   url:string;
   param?:string
 }
+
 const url:string = "http://localhost:8000/Question"
 const param:string = ""
 

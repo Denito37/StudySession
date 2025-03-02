@@ -1,3 +1,4 @@
+import { FormEvent, useState } from "react"
 import { parseAnswer } from "../functions/parse"
 type Question = {
     question:string
@@ -6,15 +7,25 @@ type Question = {
     sub_topic:string
 }
 export default function Question({question}:{question:Question}){
-    const answer = parseAnswer("example 123")
-    console.log(`Numeric Answer: ${answer}`)
+    const [answer,setAnswer] = useState<string>("")
+    const handleInput = (input:React.ChangeEvent<HTMLInputElement>) =>{
+        setAnswer(input.target.value)
+    }
+    const handleSubmit = (e:FormEvent<HTMLButtonElement>)=>{
+        e.preventDefault()
+        if(!Number.isNaN(Number(question.answer))){
+            const submittedAnswer = parseAnswer(answer)
+            console.log(submittedAnswer)
+        }
+    }
+
     return(
         <>
             <section>
-                <h3>Topic: <span>{question.topic}</span></h3>
-                <h3>SubTopic: {question.sub_topic}</h3>
-                <p>Question: {question.question}</p>
-                <input type="text" />
+                <h3>Topic: <span>{question.topic}</span> : {question.sub_topic}</h3>
+                <p><span>Questions</span>: {question.question}</p>
+                <input type="text" value={answer} onChange={handleInput} />
+                <button type="submit" onClick={handleSubmit}>Submit</button>
             </section>
         </>
     )
