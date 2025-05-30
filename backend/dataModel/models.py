@@ -1,5 +1,6 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
-from sqlalchemy.orm import sessionmaker, relationship, Session, declarative_base
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DATETIME,UUID
+from sqlalchemy.orm import sessionmaker, relationship, Session, declarative_base, mapped_column, Mapped
+from typing import List
 
 url = 'sqlite:///./QA.db'
 
@@ -18,30 +19,35 @@ def get_db():
 
 class Users(Base):
     __tablename__='Users'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True)
     username = Column(String(50))
     email = Column(String(200), unique=True)
-    createdAt = Column(String(20))
+    createdAt = Column(DATETIME)
+    results: Mapped[List['Results']] = relationship()
 
 class Questions(Base):
     __tablename__= 'Questions'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True)
     question = Column(String(200))
+    mediaURL = Column(String(300))
     answer = Column(String(1000))
     topic = Column(String(50), index=True)
     sub_topic = Column(String(50), index=True)
+    exams: Mapped[List['Exams']] = relationship(back_populates='questions') 
 
 class Exams(Base):
     __tablename__='Exams'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    topics = Column(String(100))
-    questionsID = Column(list[Integer])
-    submittedAt = Column(String(20))
+    id:Mapped[UUID] = mapped_column(primary_key=True)
+    topics = Column(List[String(100)])
+    questionsID: Mapped[UUID] = mapped_column(List[ForeignKey('Questions.id')])
+    question: Mapped['Questions'] = relationship(back_populates='exams') 
+    submittedAt = Column(DATETIME)
+    results: Mapped[List['Results']] = relationship()
 
 class Results(Base):
     __tablename__='Results'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    userID = Column(Integer)
-    examID = Column(Integer)
-    correctQuestionID = Column(list[Integer])
-    incorrectQuestionID = Column(list[Integer])
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    userID: Mapped[UUID] = mapped_column(ForeignKey('Users.id'))
+    examID: Mapped[UUID] = mapped_column(ForeignKey('Exams.id'))
+    correctQuestionID: Mapped[UUID] = mapped_column(List[ForeignKey('Questions.id')])
+    incorrectQuestionID: Mapped[UUID] = mapped_column(List[ForeignKey('Question.id')])

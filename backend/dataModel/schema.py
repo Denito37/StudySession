@@ -1,15 +1,19 @@
 from pydantic import BaseModel
+from datetime import datetime
+from typing import List
+from uuid import uuid4
+
 
 class UserBase(BaseModel):
     username: str
     email: str
-    createdAt: str
+    createdAt: datetime
 
 class UserInput(UserBase):
     pass
 
 class UserOutput(UserBase):
-    id: int
+    id: uuid4
 
 class QuestionsBase(BaseModel):
     question: str
@@ -22,21 +26,21 @@ class QuestionsInput(QuestionsBase):
     pass
 
 class QuestionsOutput(QuestionsBase):
-    id: int
+    id: uuid4
 
 class ExamBase(BaseModel):
-    topics: str
-    questionID: list[int]
-    submittedAt: str
+    topics: List[str]
+    questionID: List[uuid4]
+    submittedAt: datetime
 
 class ExamOutput(ExamBase):
-    id: int
+    id: uuid4
 
 class ResultBase(BaseModel):
-    userID: int
-    examID: int
-    correctQuestionID: list[int]
-    incorrectQuestionID:list[int]
+    userID: uuid4
+    examID: uuid4
+    correctQuestionID: List[uuid4]
+    incorrectQuestionID:List[uuid4]
 
 class ResultOutput(ResultBase):
-    id: int
+    id: uuid4
